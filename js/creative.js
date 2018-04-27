@@ -74,6 +74,9 @@
 
 })(jQuery); // End of use strict
 
+
+// get data from the slackbot so that we can mess with this page
+
 //sweet sweet global variable
 var botData;
 
@@ -94,6 +97,9 @@ if ("WebSocket" in window) {
       var received_msg = evt.data;
       botData = JSON.parse(evt.data);
       console.log("Message is received..." + evt.data);
+
+      document["Challenger"].src = "img/companylogos/" + botData.challenger + ".png" 
+      document["Challengee"].src = "img/companylogos/" + botData.challengee + ".png"
 
     var months = {
          'January' : '00',
@@ -146,6 +152,7 @@ if ("WebSocket" in window) {
         function pad(n) {
           return (n < 10 ? '0' : '') + n;
         }
+
 
    };
 

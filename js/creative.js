@@ -74,34 +74,88 @@
 
 })(jQuery); // End of use strict
 
-var target_date = new Date().getTime() + (1000*3600*48); // set the countdown date
-var days, hours, minutes, seconds; // variables for time units
+//sweet sweet global variable
+var botData;
 
-var countdown = document.getElementById("tiles"); // get tag element
+if ("WebSocket" in window) {
+   console.log("WebSocket is supported by your Browser!");
+   
+   // Let us open a web socket
+   var ws = new WebSocket("ws://localhost:9999/");
 
-getCountdown();
+   ws.onopen = function() {
+      
+      // Web Socket is connected, send data using send()
+      ws.send("Message to send");
+      console.log("Message is sent...");
+   };
 
-setInterval(function () { getCountdown(); }, 1000);
+   ws.onmessage = function (evt) { 
+      var received_msg = evt.data;
+      botData = JSON.parse(evt.data);
+      console.log("Message is received..." + evt.data);
 
-function getCountdown(){
+    var months = {
+         'January' : '00',
+         'Febuary' : '01',
+         'March' : '02',
+         'April' : '03',
+         'May' : '04',
+         'June' : '05',
+         'July' : '06',
+         'August' : '07',
+         'September' : '08',
+         'October' : '09',
+         'November' : '10',
+         'December' : '11',
+      }
 
-	// find the amount of "seconds" between now and target
-	var current_date = new Date().getTime();
-	var seconds_left = (target_date - current_date) / 1000;
+      var target_date = new Date(botData.countdownTimer.year,
+                                 months[botData.countdownTimer.month],
+                                 botData.countdownTimer.day,
+                                 botData.countdownTimer.hour,
+                                 botData.countdownTimer.minute,
+                                0); // set the countdown date
+      var days, hours, minutes, seconds; // variables for time units
 
-	days = pad( parseInt(seconds_left / 86400) );
-	seconds_left = seconds_left % 86400;
-		 
-	hours = pad( parseInt(seconds_left / 3600) );
-	seconds_left = seconds_left % 3600;
-		  
-	minutes = pad( parseInt(seconds_left / 60) );
-	seconds = pad( parseInt( seconds_left % 60 ) );
+      var countdown = document.getElementById("tiles"); // get tag element
 
-	// format countdown string + set tag value
-	countdown.innerHTML = "<span>" + days + "</span><span>" + hours + "</span><span>" + minutes + "</span><span>" + seconds + "</span>"; 
-}
+      getCountdown();
 
-function pad(n) {
-	return (n < 10 ? '0' : '') + n;
+      setInterval(function () { getCountdown(); }, 1000);
+
+      function getCountdown(){
+
+        // find the amount of "seconds" between now and target
+        var current_date = new Date().getTime();
+        var seconds_left = (target_date.getTime() - current_date) / 1000;
+
+        days = pad( parseInt(seconds_left / 86400) );
+        seconds_left = seconds_left % 86400;
+        
+        hours = pad( parseInt(seconds_left / 3600) );
+        seconds_left = seconds_left % 3600;
+            
+        minutes = pad( parseInt(seconds_left / 60) );
+        seconds = pad( parseInt( seconds_left % 60 ) );
+
+        // format countdown string + set tag value
+        countdown.innerHTML = "<span>" + days + "</span><span>" + hours + "</span><span>" + minutes + "</span><span>" + seconds + "</span>"; 
+        }
+
+        function pad(n) {
+          return (n < 10 ? '0' : '') + n;
+        }
+
+   };
+
+   ws.onclose = function() { 
+      
+      // websocket is closed.
+      console.log("Connection is closed..."); 
+   };
+} else {
+  
+   // The browser doesn't support WebSocket
+   console.log("WebSocket NOT supported by your Browser!");
 }

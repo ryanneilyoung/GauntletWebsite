@@ -84,7 +84,7 @@ if ("WebSocket" in window) {
    console.log("WebSocket is supported by your Browser!");
    
    // Let us open a web socket
-   var ws = new WebSocket("wss://yeggauntlet.com:9999/");
+   var ws = new WebSocket("ws://yeggauntlet.com/ws");
 
    ws.onopen = function() {
       

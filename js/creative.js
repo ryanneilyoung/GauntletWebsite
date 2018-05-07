@@ -1,3 +1,4 @@
+const WebSocket = require('isomorphic-ws')
 (function($) {
   "use strict"; // Start of use strict
 

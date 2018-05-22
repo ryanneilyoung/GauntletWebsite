@@ -97,6 +97,8 @@ if ("WebSocket" in window) {
   ws.onmessage = function (evt) {
     var received_msg = evt.data;
     botData = JSON.parse(evt.data);
+    botData.challengee = botData.challengee.replace(/\s+/g, '');
+    botData.challenger = botData.challenger.replace(/\s+/g, '');
     console.log("Message is received..." + evt.data);
 
     if (botData.challengee == botData.challenger) {

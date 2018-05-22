@@ -97,8 +97,6 @@ if ("WebSocket" in window) {
   ws.onmessage = function (evt) {
     var received_msg = evt.data;
     botData = JSON.parse(evt.data);
-    botData.challengee = botData.challengee.replace(/\s+/g, '');
-    botData.challenger = botData.challenger.replace(/\s+/g, '');
     console.log("Message is received..." + evt.data);
 
     if (botData.challengee == botData.challenger) {
@@ -113,14 +111,14 @@ if ("WebSocket" in window) {
 
   function updateSiteTimerNotSet() {
     document.getElementById("tagline").innerHTML = "Time left to Challenge:"
-    document["CurrentChallenger"].src = "img/companylogos/" + botData.challenger + ".png"
+    document["CurrentChallenger"].src = "img/companylogos/" + botData.challenger.replace(/\s+/g, '') + ".png"
     $("#timeUntilChallengeBlock").toggleClass('hidden');
   }
 
   function updateSiteTimerSet() {
     document.getElementById("tagline").innerHTML = "Time to Event:"
-    document["Challenger"].src = "img/companylogos/" + botData.challenger + ".png"
-    document["Challengee"].src = "img/companylogos/" + botData.challengee + ".png"
+    document["Challenger"].src = "img/companylogos/" + botData.challenger.replace(/\s+/g, '') + ".png"
+    document["Challengee"].src = "img/companylogos/" + botData.challengee.replace(/\s+/g, '') + ".png"
     $("#timeLeftToChallengeBlock").toggleClass('hidden');
   }
 

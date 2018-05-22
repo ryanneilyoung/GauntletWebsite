@@ -1,8 +1,8 @@
-(function($) {
+(function ($) {
   "use strict"; // Start of use strict
 
   // Smooth scrolling using jQuery easing
-  $('a.js-scroll-trigger[href*="#"]:not([href="#"])').click(function() {
+  $('a.js-scroll-trigger[href*="#"]:not([href="#"])').click(function () {
     if (location.pathname.replace(/^\//, '') == this.pathname.replace(/^\//, '') && location.hostname == this.hostname) {
       var target = $(this.hash);
       target = target.length ? target : $('[name=' + this.hash.slice(1) + ']');
@@ -16,7 +16,7 @@
   });
 
   // Closes responsive menu when a scroll trigger link is clicked
-  $('.js-scroll-trigger').click(function() {
+  $('.js-scroll-trigger').click(function () {
     $('.navbar-collapse').collapse('hide');
   });
 
@@ -27,7 +27,7 @@
   });
 
   // Collapse Navbar
-  var navbarCollapse = function() {
+  var navbarCollapse = function () {
     if ($("#mainNav").offset().top > 100) {
       $("#mainNav").addClass("navbar-shrink");
     } else {
@@ -81,89 +81,121 @@
 var botData;
 
 if ("WebSocket" in window) {
-   console.log("WebSocket is supported by your Browser!");
-   
-   // Let us open a web socket
-   window.WebSocket = window.WebSocket || window.MozWebSocket;
-   var ws = new WebSocket("ws://yeggauntlet.com/ws");
+  console.log("WebSocket is supported by your Browser!");
 
-   ws.onopen = function() {
-      
-      // Web Socket is connected, send data using send()
-      ws.send("Message to send");
-      console.log("Message is sent...");
-   };
+  // Let us open a web socket
+  window.WebSocket = window.WebSocket || window.MozWebSocket;
+  var ws = new WebSocket("ws://yeggauntlet.com/ws");
 
-   ws.onmessage = function (evt) { 
-      var received_msg = evt.data;
-      botData = JSON.parse(evt.data);
-      console.log("Message is received..." + evt.data);
+  ws.onopen = function () {
 
-      document["Challenger"].src = "img/companylogos/" + botData.challenger + ".png" 
-      document["Challengee"].src = "img/companylogos/" + botData.challengee + ".png"
+    // Web Socket is connected, send data using send()
+    ws.send("Message to send");
+    console.log("Message is sent...");
+  };
 
+  ws.onmessage = function (evt) {
+    var received_msg = evt.data;
+    botData = JSON.parse(evt.data);
+    console.log("Message is received..." + evt.data);
+
+    if (botData.challengee == botData.challenger) {
+      updateSiteTimerNotSet();
+      setTimer();
+    } else {
+      updateSiteTimerSet();
+      setTimer();
+    }
+
+  };
+
+  function updateSiteTimerNotSet() {
+    document.getElementById("tagline").innerHTML = "Time left to Challenge:"
+    document["CurrentChallenger"].src = "img/companylogos/" + botData.challenger + ".png"
+    $("#timeUntilChallengeBlock").toggleClass('hidden');
+  }
+
+  function updateSiteTimerSet() {
+    document.getElementById("tagline").innerHTML = "Time to Event:"
+    document["Challenger"].src = "img/companylogos/" + botData.challenger + ".png"
+    document["Challengee"].src = "img/companylogos/" + botData.challengee + ".png"
+    $("#timeLeftToChallengeBlock").toggleClass('hidden');
+  }
+
+  function setTimer() {
     var months = {
-         'January' : '00',
-         'Febuary' : '01',
-         'March' : '02',
-         'April' : '03',
-         'May' : '04',
-         'June' : '05',
-         'July' : '06',
-         'August' : '07',
-         'September' : '08',
-         'October' : '09',
-         'November' : '10',
-         'December' : '11',
+      'January': '00',
+      'Febuary': '01',
+      'March': '02',
+      'April': '03',
+      'May': '04',
+      'June': '05',
+      'July': '06',
+      'August': '07',
+      'September': '08',
+      'October': '09',
+      'November': '10',
+      'December': '11',
+    }
+
+    var target_date = new Date(botData.countdownTimer.year,
+      months[botData.countdownTimer.month],
+      botData.countdownTimer.day,
+      botData.countdownTimer.hour,
+      botData.countdownTimer.minute,
+      0); // set the countdown date
+    var days, hours, minutes, seconds; // variables for time units
+
+    var countdown = document.getElementById("tiles"); // get tag element
+
+    //if the challenge date has passed, we should assign the new deadline to 1 week after the challenge
+    if(target_date < new Date())
+    {
+      target_date.setDate(target_date.getDate()+7);
+      if(target_date < new Date())
+      {
+        document.getElementById("tagline").innerHTML = "Challenge Deadline passed"
+        $("#countdown").toggleClass('hidden');
       }
+    }
 
-      var target_date = new Date(botData.countdownTimer.year,
-                                 months[botData.countdownTimer.month],
-                                 botData.countdownTimer.day,
-                                 botData.countdownTimer.hour,
-                                 botData.countdownTimer.minute,
-                                0); // set the countdown date
-      var days, hours, minutes, seconds; // variables for time units
+    getCountdown();
 
-      var countdown = document.getElementById("tiles"); // get tag element
-
+    setInterval(function () {
       getCountdown();
+    }, 1000);
 
-      setInterval(function () { getCountdown(); }, 1000);
+    function getCountdown() {
 
-      function getCountdown(){
+      // find the amount of "seconds" between now and target
+      var current_date = new Date().getTime();
+      var seconds_left = (target_date.getTime() - current_date) / 1000;
 
-        // find the amount of "seconds" between now and target
-        var current_date = new Date().getTime();
-        var seconds_left = (target_date.getTime() - current_date) / 1000;
+      days = pad(parseInt(seconds_left / 86400));
+      seconds_left = seconds_left % 86400;
 
-        days = pad( parseInt(seconds_left / 86400) );
-        seconds_left = seconds_left % 86400;
-        
-        hours = pad( parseInt(seconds_left / 3600) );
-        seconds_left = seconds_left % 3600;
-            
-        minutes = pad( parseInt(seconds_left / 60) );
-        seconds = pad( parseInt( seconds_left % 60 ) );
+      hours = pad(parseInt(seconds_left / 3600));
+      seconds_left = seconds_left % 3600;
 
-        // format countdown string + set tag value
-        countdown.innerHTML = "<span>" + days + "</span><span>" + hours + "</span><span>" + minutes + "</span><span>" + seconds + "</span>"; 
-        }
+      minutes = pad(parseInt(seconds_left / 60));
+      seconds = pad(parseInt(seconds_left % 60));
 
-        function pad(n) {
-          return (n < 10 ? '0' : '') + n;
-        }
+      // format countdown string + set tag value
+      countdown.innerHTML = "<span>" + days + "</span><span>" + hours + "</span><span>" + minutes + "</span><span>" + seconds + "</span>";
+    }
 
+    function pad(n) {
+      return (n < 10 ? '0' : '') + n;
+    }
+  }
 
-   };
+  ws.onclose = function () {
 
-   ws.onclose = function() { 
-      
-      // websocket is closed.
-      console.log("Connection is closed..."); 
-   };
+    // websocket is closed.
+    console.log("Connection is closed...");
+  };
 } else {
-  
-   // The browser doesn't support WebSocket
-   console.log("WebSocket NOT supported by your Browser!");
+
+  // The browser doesn't support WebSocket
+  console.log("WebSocket NOT supported by your Browser!");
 }

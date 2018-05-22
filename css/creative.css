@@ -408,3 +408,8 @@ header.masthead p {
 	text-transform: uppercase;
 	display: inline-block;
 }
+
+.hidden {
+  display: none !important;
+  visibility: hidden !important;
+}

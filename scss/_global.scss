@@ -187,3 +187,15 @@ img::-moz-selection {
   display: none !important;
   visibility: hidden !important;
 }
+
+body{
+  background-color: $gray-200;
+}
+
+.white {
+  background-color: $white
+}
+
+.bottom_strike {
+  border-bottom: 1px solid $gray-300;
+}

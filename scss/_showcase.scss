@@ -1,0 +1,28 @@
+.showcase {
+  .showcase-text {
+    padding: 3rem;
+    background-color: $white;
+    h2 {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    p {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
+  .showcase-img {
+    background-color: $white;
+    min-height: 30rem;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center center;
+  }
+  @media (min-width: 768px) {
+    .showcase-text {
+      padding: 7rem;
+    }
+  }
+}

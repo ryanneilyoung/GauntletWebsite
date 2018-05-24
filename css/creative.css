@@ -190,6 +190,18 @@ img::-moz-selection {
   visibility: hidden !important;
 }
 
+body {
+  background-color: #e9ecef;
+}
+
+.white {
+  background-color: #fff;
+}
+
+.bottom_strike {
+  border-bottom: 1px solid #dee2e6;
+}
+
 #mainNav {
   border-bottom: 1px solid rgba(33, 37, 41, 0.1);
   background-color: #fff;
@@ -419,4 +431,35 @@ header.masthead p {
 
 .btn-primary:active, .btn-primary:focus {
   box-shadow: 0 0 0 0.2rem rgba(240, 95, 64, 0.5) !important;
+}
+
+.showcase .showcase-text {
+  padding: 3rem;
+  background-color: #fff;
+}
+
+.showcase .showcase-text h2 {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.showcase .showcase-text p {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.showcase .showcase-img {
+  background-color: #fff;
+  min-height: 30rem;
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center center;
+}
+
+@media (min-width: 768px) {
+  .showcase .showcase-text {
+    padding: 7rem;
+  }
 }
